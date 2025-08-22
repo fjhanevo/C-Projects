@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "contacts.h"
+#include <stdbool.h>
 
 #define INPUT_SIZE 10
 
@@ -12,6 +13,7 @@ int main(void)
     int contact_count = 0;
     int option;
     char input[INPUT_SIZE];
+    bool flag = true;
     do {
         menu();
         // fgets to remove trailing newline from input
@@ -20,6 +22,7 @@ int main(void)
 
         switch (option) {
             case 1:
+                flag = false;
                 break;
             case 2:
                 add_contact(phonebook, &contact_count);
@@ -28,7 +31,7 @@ int main(void)
                 printf("Option: %d is not an alternative!\n", option);
         }
     } 
-    while (option != 1);
+    while (flag);
     return 0;
 }
 

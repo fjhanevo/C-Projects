@@ -11,4 +11,5 @@ struct Contact {
 
 void add_contact(struct Contact phonebook[], int *contact_count);
 void list_contacts(struct Contact phonebook[], int *contact_count);
-void search_contacts(struct Contact phonebook[], int *contact_count);
+void search_contact(struct Contact phonebook[], int *contact_count);
+void delete_contact(struct Contact phonebook[], int *contact_count);

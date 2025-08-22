@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 static void print_contact(struct Contact phonebook[], unsigned int index)
 {
         printf("Name: %s\n",phonebook[index].name);
@@ -57,7 +56,7 @@ void list_contacts(struct Contact phonebook[], int *contact_count)
     }
 }
 
-void search_contacts(struct Contact phonebook[], int *contact_count)
+void search_contact(struct Contact phonebook[], int *contact_count)
 {
     if (*contact_count == 0) {
         printf("No contacts to search for!\n");
@@ -65,16 +64,43 @@ void search_contacts(struct Contact phonebook[], int *contact_count)
     }  
 
     printf("Please type in a name to search for: ");
-    char search[NAME_SIZE];
-    fgets(search, sizeof(search), stdin);
+    char contact_name[NAME_SIZE];
+    fgets(contact_name, sizeof(contact_name), stdin);
     // Remove trailing newline
-    search[strcspn(search, "\n")] = 0;
+    contact_name[strcspn(contact_name, "\n")] = 0;
 
-    // Search through contact list for the name
+    // contact_name through contact list for the name
     for (unsigned int i = 0; i < *contact_count; i++) {
-        if (strcmp(search, phonebook[i].name) == 0) {
+        if (strcmp(contact_name, phonebook[i].name) == 0) {
             printf("Contact found!\n");
             print_contact(phonebook, i);
+            return;
+        }
+    }
+    printf("Contact not found!\n");
+}
+
+void delete_contact(struct Contact phonebook[], int *contact_count)
+{
+ 
+    if (*contact_count == 0) {
+        printf("No contacts to delete!\n");
+        return;
+    }
+
+    printf("Type name of contact to delete: ");
+    char contact_name[NAME_SIZE];
+    fgets(contact_name, sizeof(contact_name), stdin);
+    contact_name[strcspn(contact_name, "\n")] = 0;
+
+    for (unsigned int i = 0; i < *contact_count; i++) {
+        if (strcmp(contact_name, phonebook[i].name) == 0) {
+            printf("Deleting contact: %s\n", phonebook[i].name);
+            // Delete element and shift all other elements
+            for (unsigned int j = i; j < (*contact_count - 1); j++) {
+                phonebook[j] = phonebook[j+1];
+            }
+            (*contact_count)--;
             return;
         }
     }

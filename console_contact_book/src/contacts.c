@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-static void print_contacts(struct Contact phonebook[], unsigned int index)
+static void print_contact(struct Contact phonebook[], unsigned int index)
 {
         printf("Name: %s\n",phonebook[index].name);
         printf("Phone: %s\n",phonebook[index].phone);
@@ -53,7 +53,7 @@ void list_contacts(struct Contact phonebook[], int *contact_count)
     }
 
     for (unsigned int i = 0; i < *contact_count; i++) {
-        print_contacts(phonebook, i);
+        print_contact(phonebook, i);
     }
 }
 
@@ -74,7 +74,7 @@ void search_contacts(struct Contact phonebook[], int *contact_count)
     for (unsigned int i = 0; i < *contact_count; i++) {
         if (strcmp(search, phonebook[i].name) == 0) {
             printf("Contact found!\n");
-            print_contacts(phonebook, i);
+            print_contact(phonebook, i);
             return;
         }
     }

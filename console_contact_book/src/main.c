@@ -31,7 +31,10 @@ int main(void)
                 list_contacts(phonebook, &contact_count);
                 break;
             case 4: 
-                search_contacts(phonebook, &contact_count);
+                search_contact(phonebook, &contact_count);
+                break;
+            case 5:
+                delete_contact(phonebook, &contact_count);
                 break;
             default:
                 printf("Option: %d is not an alternative!\n", option);
@@ -48,5 +51,6 @@ void menu(void)
     printf("1. Exit\n");
     printf("2. Add contact\n");
     printf("3. List contacts\n");
-    printf("4. Search contacts\n");
+    printf("4. Search contact\n");
+    printf("5. Delete contact\n");
 }

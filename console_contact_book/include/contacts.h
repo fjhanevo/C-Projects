@@ -1,6 +1,6 @@
 #define MAX_CONTACTS 100
 #define NAME_SIZE 50
-#define PHONE_SIZE 9
+#define PHONE_SIZE 50
 #define EMAIL_SIZE 50
 
 struct Contact {
@@ -10,3 +10,5 @@ struct Contact {
 };
 
 void add_contact(struct Contact phonebook[], int *contact_count);
+void list_contacts(struct Contact phonebook[], int *contact_count);
+void search_contacts(struct Contact phonebook[], int *contact_count);

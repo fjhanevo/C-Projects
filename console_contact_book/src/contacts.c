@@ -2,12 +2,20 @@
 #include <stdio.h>
 #include <string.h>
 
+
+static void print_contacts(struct Contact phonebook[], unsigned int index)
+{
+        printf("Name: %s\n",phonebook[index].name);
+        printf("Phone: %s\n",phonebook[index].phone);
+        printf("Email: %s\n\n",phonebook[index].email);
+}
+
 void add_contact(struct Contact phonebook[], int *contact_count)
 {
     int index = *contact_count;  
 
     if (index >= MAX_CONTACTS) {
-        printf("Phonebook is full!");
+        printf("Phonebook is full!\n");
         return;
     }
 
@@ -35,4 +43,40 @@ void add_contact(struct Contact phonebook[], int *contact_count)
     (*contact_count)++;
 
     printf("Contact added successfully!\n");
+}
+
+void list_contacts(struct Contact phonebook[], int *contact_count)
+{
+    if (*contact_count == 0) {
+        printf("Contact list is empty!\n");
+        return;
+    }
+
+    for (unsigned int i = 0; i < *contact_count; i++) {
+        print_contacts(phonebook, i);
+    }
+}
+
+void search_contacts(struct Contact phonebook[], int *contact_count)
+{
+    if (*contact_count == 0) {
+        printf("No contacts to search for!\n");
+        return;
+    }  
+
+    printf("Please type in a name to search for: ");
+    char search[NAME_SIZE];
+    fgets(search, sizeof(search), stdin);
+    // Remove trailing newline
+    search[strcspn(search, "\n")] = 0;
+
+    // Search through contact list for the name
+    for (unsigned int i = 0; i < *contact_count; i++) {
+        if (strcmp(search, phonebook[i].name) == 0) {
+            printf("Contact found!\n");
+            print_contacts(phonebook, i);
+            return;
+        }
+    }
+    printf("Contact not found!\n");
 }

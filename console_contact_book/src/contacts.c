@@ -106,3 +106,51 @@ void delete_contact(struct Contact phonebook[], int *contact_count)
     }
     printf("Contact not found!\n");
 }
+
+void save_contacts(struct Contact phonebook[], int *contact_count)
+{
+    FILE* file = fopen("contact_log.txt", "w");
+    if (file == NULL) {
+        printf("Error: Could not save contacts to file!\n");
+        return;
+    }
+
+    for (unsigned int i = 0; i < *contact_count; i++) {
+        fprintf(file, "%s, %s, %s\n", phonebook[i].name, phonebook[i].phone, phonebook[i].email);
+    }
+
+    fclose(file);
+}
+
+int load_contacts(struct Contact phonebook[], int *contact_count)
+{
+    FILE* file = fopen("contact_log.txt", "r");
+
+    if (file == NULL) {
+        printf("No contact log found. Creating new one upon saving.\n");
+        *contact_count = 0;
+        return 0;
+    }
+
+    char buf[BUFF_SIZE];
+    *contact_count = 0;
+
+    // read file line by line
+    while (fgets(buf, sizeof(buf), file) != NULL && *contact_count < MAX_CONTACTS) {
+        // parse csv from the buffer
+        // format string to prevent buffer overflow
+        sscanf(buf, "%49[^,], %49[^,], %49[^\n]",
+               phonebook[*contact_count].name, 
+               phonebook[*contact_count].phone,
+               phonebook[*contact_count].email);
+        (*contact_count)++;
+    }
+
+    fclose(file);
+    printf("%d contact(s) loaded.\n", *contact_count);
+
+    return *contact_count;
+
+}
+
+

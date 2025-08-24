@@ -2,6 +2,7 @@
 #define NAME_SIZE 50
 #define PHONE_SIZE 50
 #define EMAIL_SIZE 50
+#define BUFF_SIZE 255
 
 struct Contact {
     char name[NAME_SIZE];
@@ -13,3 +14,5 @@ void add_contact(struct Contact phonebook[], int *contact_count);
 void list_contacts(struct Contact phonebook[], int *contact_count);
 void search_contact(struct Contact phonebook[], int *contact_count);
 void delete_contact(struct Contact phonebook[], int *contact_count);
+void save_contacts(struct Contact phonebook[], int *contact_count);
+int load_contacts(struct Contact phonebook[], int *contact_count);

@@ -5,7 +5,7 @@
 
 #define INPUT_SIZE 50
 
-void menu(void);
+void print_menu(void);
 
 int main(void)
 {
@@ -14,8 +14,11 @@ int main(void)
     int option;
     char input[INPUT_SIZE];
     bool flag = true;
+
+    load_contacts(phonebook, &contact_count);
+
     do {
-        menu();
+        print_menu();
         // fgets to remove trailing newline from input
         fgets(input, sizeof(input), stdin);
         option = atoi(input);
@@ -41,12 +44,14 @@ int main(void)
         }
     } 
     while (flag);
-    printf("Contact count: %d\n", contact_count);
+
+    save_contacts(phonebook, &contact_count);
+
     return 0;
 }
 
 
-void menu(void)
+void print_menu(void)
 {
     printf("1. Exit\n");
     printf("2. Add contact\n");

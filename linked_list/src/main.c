@@ -12,8 +12,10 @@ int main(void) {
     printf("Initial list: \n");
     print_list(head);
 
-    insert_at_beginning(&head, 15);
-    insert_at_end(&head, 155);
+    /* insert_at_beginning(&head, 15); */
+    /* insert_at_end(&head, 155); */
+    // should be val 69 at position 2
+    insert_at_position(&head, 69, 1); 
 
     printf("Modified list: \n");
     print_list(head);

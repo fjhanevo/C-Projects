@@ -1,6 +1,6 @@
-#include "node.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "node.h"
 
 struct Node* create_node(int data)
 {
@@ -18,6 +18,10 @@ struct Node* create_node(int data)
 
 void print_list(struct Node* head)
 {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
     struct Node* current = head;
     int counter = 0;
     while (current != NULL) {
@@ -68,13 +72,32 @@ void insert_at_position(struct Node** head_ref, int data, int position)
     *current = node;
 }
 
-void free_list(struct Node* head)
+void free_list(struct Node** head_ref)
 {
-    struct Node* current = head; 
+    struct Node* current = *head_ref; 
+    struct Node* next_node;
+
     while (current != NULL) {
-        struct Node* next_node = current->next;
+        next_node = current->next;
         free(current);
         current = next_node;
     }
-    head = NULL;
+    *head_ref = NULL;
+}
+
+int delete_at_position(struct Node** head_ref, int position)
+{
+    struct Node** current = head_ref;
+
+    while (*current != NULL && position > 0) {
+        current = &(*current)->next;
+        position--;
+    }
+
+    if (*current == NULL) return -1;
+
+    struct Node* delete_next_node = *current;
+    *current = delete_next_node->next;
+    free(delete_next_node);
+    return 0;
 }

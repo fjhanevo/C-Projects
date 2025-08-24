@@ -19,9 +19,11 @@ struct Node* create_node(int data)
 void print_list(struct Node* head)
 {
     struct Node* current = head;
+    int counter = 0;
     while (current != NULL) {
-        printf("%d\n", current->data);
+        printf("%d: %d\n", counter, current->data);
         current = current->next;
+        counter++;
     }
     printf("NULL\n");
 }
@@ -43,12 +45,27 @@ void insert_at_end(struct Node** head_ref, int data)
         return;
     }    
 
-    // navigate to last node, assign temp to the last node
-    struct Node* temp = *head_ref;
-    while (temp->next != NULL) {
-        temp = temp->next;
+    // navigate to last node, assign current to the last node
+    struct Node* current = *head_ref;
+    while (current->next != NULL) {
+        current = current->next;
     }
-    temp->next = node;
+    current->next = node;
+}
+
+void insert_at_position(struct Node** head_ref, int data, int position)
+{
+    struct Node* node = create_node(data);
+    struct Node** current = head_ref;
+
+    // advance to the pointer that should point to the new node
+    while (position > 0 && *current != NULL) {
+        // set current to link of the next node
+        current = &(*current)->next;
+        position--;
+    }
+    node->next = *current;
+    *current = node;
 }
 
 void free_list(struct Node* head)

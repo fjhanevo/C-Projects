@@ -9,6 +9,9 @@ int main(void) {
     insert_at_beginning(&head, 10);
     insert_at_beginning(&head, 20);
     insert_at_beginning(&head, 30);
+    print_list(head);
+
+    head = reverse_list(head);
 
     print_list(head);
     insert_at_position(&head, 66, 1);
@@ -20,8 +23,6 @@ int main(void) {
     free_list(&head);
     print_list(head);
 
-    
-        
     return 0;
 }
 

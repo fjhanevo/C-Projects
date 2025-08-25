@@ -11,3 +11,4 @@ void insert_at_position(struct Node** head_ref, int data, int position);
 void free_list(struct Node** head_ref);
 
 int delete_at_position(struct Node** head_ref, int position);
+struct Node* reverse_list(struct Node* head);

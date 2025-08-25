@@ -101,3 +101,24 @@ int delete_at_position(struct Node** head_ref, int position)
     free(delete_next_node);
     return 0;
 }
+
+struct Node* reverse_list(struct Node* head)
+{
+    struct Node* current = head, *previous = NULL, *next_node;
+
+    // go through all nodes
+    while (current != NULL) {
+        // store next_node
+        next_node = current->next;
+
+        // reverse current node's next pointer
+        current->next = previous;
+
+        // move pointer on position ahead
+        previous = current;
+        current = next_node;
+    }
+    return previous;
+}
+
+

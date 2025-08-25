@@ -1,8 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 #define MAX_INPUT 255
 #define MAX_ARGS 64
+
+void execute_command(char *args[]);
 
 int main(void)
 {
@@ -14,7 +19,7 @@ int main(void)
         input[strcspn(input, "\n")] = 0;    // remove trailing newline
 
         // exit statement
-        if (strcmp(input, "quit") == 0) break;
+        if (strcmp(input, "exit") == 0) break;
 
         int index = 0;
 
@@ -27,12 +32,27 @@ int main(void)
 
         args[index] = NULL; // set last element to NULL
 
-        // print arguments for testing
-        printf("Arguments found:\n");
-        for (int j = 0; j < index; j++) {
-            printf("  args[%d]: \"%s\"\n",j, args[j]);
-        }
+        execute_command(args);
 
     }
     return 0;
+}
+
+void execute_command(char *args[])
+{
+    pid_t pid = fork();  // create child process
+
+    if (pid == 0) {
+        // child process
+        execvp(args[0], args);
+        perror("execvp failed");
+        exit(1);
+    } else if (pid > 0) {
+        // parent process
+        wait(NULL);
+    } else {
+        // fork failed
+        perror("Fork failed");
+    }
+    
 }

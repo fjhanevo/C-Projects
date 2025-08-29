@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include "server.h"
+
+#define PORT 8080
+
+int listening_socket(int port)
+{
+    int server_fd;
+    int opt = 1;
+    struct sockaddr_in addr;
+
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("listening socket failed!\n");
+        return -1;
+    }
+
+    // attach socket to PORT
+    if (setsockopt(server_fd, SOL_SOCKET, 
+                   SO_REUSEADDR | SO_REUSEPORT, 
+                   &opt, sizeof(opt))) {
+        perror("setockopt");
+        return -1;
+    }
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(PORT);
+    addr.sin_addr.s_addr = INADDR_ANY;
+
+    // bind the socket
+    if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        perror("bind failed!");
+        return -1;
+    }
+
+    // put socket into listening mode
+    if (listen(server_fd, 3) < 0) {
+        perror("listen");
+        return -1;
+    }
+
+    return server_fd;
+}
+

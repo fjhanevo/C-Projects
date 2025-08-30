@@ -8,5 +8,6 @@ int parse_request(const char *request, char *method, char *path);
 void send_http_response(int client_fd, const char *path);
 void send_404_response(int client_fd);
 void send_200_response(int client_fd, FILE* file, const char *file_path);
+const char *get_mime_type(const char *file_path);
 
 #endif // HTTP_H

@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "server.h"
+#include "http.h"
 
 #define PORT 8080
 
@@ -50,9 +51,12 @@ void run_server(int server_fd)
     socklen_t addrlen = sizeof(addr); 
 
     while (1) {
-        if ((client_fd= accept(server_fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
+        if ((client_fd = accept(server_fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
             perror("accept");
-            return;
+            continue; 
+        }
+        else {
+            handle_http_request(client_fd);
         }
     }
 }

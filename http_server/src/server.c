@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #include "server.h"
 #include "http.h"
 
@@ -55,8 +56,7 @@ void run_server(int server_fd)
             perror("accept");
             continue; 
         }
-        else {
-            handle_http_request(client_fd);
-        }
+        handle_http_request(client_fd);
+        close(client_fd);
     }
 }

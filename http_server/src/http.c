@@ -47,7 +47,13 @@ void send_http_response(int client_fd, const char *path)
     char file_path[PATH_SIZE];
 
     // securely create path to avoid overwriting the buffer
-    snprintf(file_path, sizeof(file_path), "./public%s", path);
+    // if path is "/" map it to "/index.html"
+    if (strcmp(path, "/") == 0) {
+        snprintf(file_path, sizeof(file_path), "./public/index.html");
+    }
+    else {
+        snprintf(file_path, sizeof(file_path), "./public%s", path);
+    }
 
     FILE *file = fopen(file_path, "rb");
 
@@ -62,7 +68,7 @@ void send_http_response(int client_fd, const char *path)
 
 void send_404_response(int client_fd)
 {
-    const char *response_404 = "HTTP/1.0 404 Not Found\n\n";
+    const char *response_404 = "HTTP/1.0 404 Not Found\r\n\r\n";
 
     send(client_fd, response_404, strlen(response_404), 0);
 }
@@ -73,7 +79,7 @@ const char *get_mime_type(const char *file_path)
     if (strstr(file_path, ".html")) return "text/html";
     if (strstr(file_path, ".css")) return "text/css";
     if (strstr(file_path, ".js")) return "application/javascript";
-    if (strstr(file_path, ".jpg")) return "image/jpg";
+    if (strstr(file_path, ".jpg") || strstr(file_path, ".jpeg")) return "image/jpeg";
     if (strstr(file_path, ".png")) return "image/png";
 
     // Default return type
@@ -93,7 +99,7 @@ void send_200_response(int client_fd, FILE *file, const char *file_path)
 
     // construct and send headers
     char header_buffer[HEAD_SIZE];
-    sprintf(header_buffer,
+    snprintf(header_buffer, sizeof(header_buffer),
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: %s\r\n"
             "Content-Length: %ld\r\n"
@@ -109,5 +115,4 @@ void send_200_response(int client_fd, FILE *file, const char *file_path)
     while ((bytes_read = fread(file_buffer, 1, sizeof(file_buffer), file)) > 0) {
         send(client_fd, file_buffer, bytes_read, 0);
     }
-
 }

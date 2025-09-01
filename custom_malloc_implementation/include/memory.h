@@ -12,5 +12,6 @@ typedef struct block_meta {
 
 static block_meta *find_free_block(size_t size);
 static block_meta *request_space(size_t size);
+void* mmalloc(size_t size);
 
 #endif // !MEMORY_H

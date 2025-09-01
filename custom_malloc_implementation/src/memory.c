@@ -42,3 +42,38 @@ static block_meta *request_space(size_t size)
 }
 
 
+// custom malloc() implementation 
+void *mmalloc(size_t size)
+{
+    if (size <= 0) {
+        return NULL;
+    }
+
+    block_meta *block;
+
+    if (global_head == NULL) {
+        // request more space
+        block = request_space(size);
+        if (block == NULL) {
+            return NULL;    // only happens if sbrk() fails
+        }
+        global_head = block;
+    }
+    else {
+        // find a free block
+        block = find_free_block(size);
+        if (block == NULL) {
+            // no free space found so request more
+            block = request_space(size);
+            if (block == NULL) {
+                return NULL;
+            }
+        }
+        else {
+            // free block found, mark it as not free
+            block->is_free = false;
+        }
+    }
+    // return pointer to the payload
+    return (void*)(block + 1);
+}

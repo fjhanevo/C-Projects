@@ -41,7 +41,6 @@ static block_meta *request_space(size_t size)
     return new_blk;
 }
 
-
 // custom malloc() implementation 
 void *mmalloc(size_t size)
 {
@@ -76,4 +75,16 @@ void *mmalloc(size_t size)
     }
     // return pointer to the payload
     return (void*)(block + 1);
+}
+
+// custom free implementation
+void mfree(void *ptr)
+{
+    if (ptr == NULL) 
+        return;
+
+    //TODO: Find address of hidden header using pointer arithmetic
+    // change the is_free flag to true
+    // add this block to the top of the free list
+
 }

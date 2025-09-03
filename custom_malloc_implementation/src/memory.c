@@ -80,11 +80,18 @@ void *mmalloc(size_t size)
 // custom free implementation
 void mfree(void *ptr)
 {
+    // do nothing
     if (ptr == NULL) 
         return;
 
-    //TODO: Find address of hidden header using pointer arithmetic
-    // change the is_free flag to true
-    // add this block to the top of the free list
+    // cast generic void ptr to the header, move the ptr back by
+    // the size of one block_meta
+    block_meta *block = (block_meta*)ptr - 1;
 
+    // mark block as free
+    block->is_free = true;
+
+    // add block back into the free list
+    block->next = global_head;
+    global_head = block;
 }

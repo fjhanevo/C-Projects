@@ -27,11 +27,11 @@ all: $(TARGET)
 # linking
 $(TARGET): $(OBJS)
 	@mkdir -p $(TARGET_DIR) 	# create dir if it doesn't exist
-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
 # compilation
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)      # create dir if it doesn't exist
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean: 

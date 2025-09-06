@@ -1,5 +1,6 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-void snake_test();
+void draw_borders(int width, int height);
+void play_snake();
 #endif // !SNAKE_H

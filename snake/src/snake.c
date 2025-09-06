@@ -9,23 +9,23 @@
 #define MIN_SIZE 2
  
 
-void draw_borders(int width, int height)
+static void draw_borders(int width, int height)
 // make sure initscr is called first
 {
-    // coord variables
-    const char wall = '0';
+    const char char_width = '-';
+    const char char_height = '|';
 
     // draw top and bottom
     for (int x = 0; x < width; x++) {
-        mvaddch(0, x, wall);
-        mvaddch(height-1, x, wall);
+        mvaddch(0, x, char_width);
+        mvaddch(height-1, x, char_width);
     }
 
     // draw left and right columns
     for (int y = 0; y < height; y++) {
         // position 0 is already drawn
-        mvaddch(y, 0, wall);
-        mvaddch(y, width-1, wall);
+        mvaddch(y, 0, char_height);
+        mvaddch(y, width-1, char_height);
     }
 }
 
@@ -56,7 +56,6 @@ static int get_valid_int(const char *msg, int max)
 static void get_size(int *width, int *height) 
 {
     *width = get_valid_int("Please type in border width: ", MAX_WIDTH); 
-    printf("\n");
     *height = get_valid_int("Please type in border height: ", MAX_HEIGHT);
 }
 

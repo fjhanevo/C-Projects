@@ -3,11 +3,6 @@
 
 int main(void)
 {
-    initscr();                  // initialize
-    snake_test();               // print something
-    refresh();                  // print it on the real screen
-    getch();                    // wait for user input
-    endwin();                   // end 
-
+    play_snake();
     return 0;
 }

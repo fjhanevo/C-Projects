@@ -70,10 +70,12 @@ static void spawn_food(GameState *state)
 }
 
 static void init_snake(GameState *state)
+// spawn the snake in the middle of the screen
 {
     state->snake.pos[0].x = (state->width) / 2;
     state->snake.pos[0].y = (state->height) / 2;
     state->snake.length = 1;
+    state->score = 0;
 }
 
 static void draw_snake(GameState *state)
@@ -83,12 +85,39 @@ static void draw_snake(GameState *state)
     }
 }
 
+static void update_direction(Snake *snake, int ch)
+{
+    switch (ch) {
+        case 'w': snake->dir = UP; break;
+        case 'a': snake->dir = LEFT; break;
+        case 's': snake->dir = DOWN; break;
+        case 'd': snake->dir = RIGHT; break;
+        default: break;
+    }
+}
+
+static void update_snake(Snake *snake)
+{
+    // shift body backwards
+    for (int i = snake->length - 1; i > 0; i--) {
+        snake->pos[i] = snake->pos[i-1];
+    }
+
+    // move head based on direction
+    switch (snake->dir) {
+        case UP: snake->pos[0].y--; break;
+        case DOWN: snake->pos[0].y++; break;
+        case LEFT: snake->pos[0].x--; break;
+        case RIGHT: snake->pos[0].x++; break;
+    }
+}
+
 static void setup_game(GameState *state)
 {
     get_size(&state->width, &state->height);
     // initialize
     initscr();
-    clear();
+    noecho();
     draw_borders(state);
     refresh();
     init_snake(state);
@@ -109,10 +138,14 @@ void play_snake()
 
     setup_game(&state);
 
-        // main game loop
+    // main game loop
     while (1) {
+        //TODO: Fix how movement works...
         int ch = getch();
         if (ch == 'q') break;
+        update_direction(&state.snake, ch);
+        //TODO: Add update_snake and test!
+
 
         // check if food timed out
         if (difftime(time(NULL), state.food.spawn_time) > FOOD_TIME) {
@@ -125,7 +158,5 @@ void play_snake()
         napms(100);     // slow down loop
     }
     endwin();
-    clear();
-
 }
 

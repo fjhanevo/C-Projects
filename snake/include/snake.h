@@ -4,6 +4,8 @@
 
 #define SNAKE_SIZE 100
 
+typedef enum { UP, DOWN, LEFT, RIGHT } Direction;
+
 typedef struct {
     int x;
     int y;
@@ -14,9 +16,11 @@ typedef struct {
     time_t spawn_time;
 } Food;
 
+
 typedef struct {
     Point pos[SNAKE_SIZE];
     int length;
+    Direction dir;
 } Snake;
 
 typedef struct {

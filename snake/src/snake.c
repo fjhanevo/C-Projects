@@ -61,12 +61,12 @@ static void get_size(int *width, int *height)
     *height = get_valid_int("Please type in border height: ", MAX_HEIGHT);
 }
 
-static void spawn_food(Food *food, int width, int height)
+static void spawn_food(GameState *state)
 {
-    food->pos.x = rand() % (width - 2) + 1;    // avoid borders 
-    food->pos.y = rand() % (height - 2) + 1;    // avoid borders 
-    food->spawn_time = time(NULL);
-    mvaddch(food->pos.y, food->pos.x, 'o');
+    state->food.pos.x = rand() % (state->width - 2) + 1;    // avoid borders 
+    state->food.pos.y = rand() % (state->height - 2) + 1;    // avoid borders 
+    state->food.spawn_time = time(NULL);
+    mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 }
 
 static void init_snake(GameState *state)
@@ -83,6 +83,22 @@ static void draw_snake(GameState *state)
     }
 }
 
+static void setup_game(GameState *state)
+{
+    get_size(&state->width, &state->height);
+    // initialize
+    initscr();
+    clear();
+    draw_borders(state);
+    refresh();
+    init_snake(state);
+    draw_snake(state);
+    refresh();
+    spawn_food(state);
+    refresh();
+
+
+}
 
 void play_snake()
 // main function to play the game
@@ -90,29 +106,17 @@ void play_snake()
     // variables
     srand(time(NULL));
     GameState state;
-    Food food;
-    Snake snake; 
 
-    get_size(&state.width, &state.height);
-    // initialize
-    initscr();
-    clear();
-    draw_borders(state.width, state.height);
-    /* refresh(); */
-    /* init_snake(&snake, state.width, state.height); */
-    /* draw_snake(&snake); */
-    /* refresh(); */
-    /* spawn_food(&food, width, height); */
-    /* refresh(); */
+    setup_game(&state);
 
-    // main game loop
+        // main game loop
     while (1) {
         int ch = getch();
         if (ch == 'q') break;
 
         // check if food timed out
-        if (difftime(time(NULL), food.spawn_time) > FOOD_TIME) {
-            spawn_food(&food, width, height);
+        if (difftime(time(NULL), state.food.spawn_time) > FOOD_TIME) {
+            spawn_food(&state);
         }
 
         //TODO: Check snake collision

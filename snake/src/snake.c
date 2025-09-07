@@ -78,10 +78,10 @@ static void init_snake(GameState *state)
     state->score = 0;
 }
 
-static void draw_snake(GameState *state)
+static void draw_snake(Snake *snake)
 {
-    for (int i = 0; i < state->snake.length; i++) {
-        mvaddch(state->snake.pos[i].y, state->snake.pos[i].x, '#');
+    for (int i = 0; i < snake->length; i++) {
+        mvaddch(snake->pos[i].y, snake->pos[i].x, (i == 0) ? '@' : '#');
     }
 }
 
@@ -119,11 +119,8 @@ static void setup_game(GameState *state)
     initscr();
     noecho();
     draw_borders(state);
-    refresh();
     init_snake(state);
-    draw_snake(state);
-    refresh();
-    spawn_food(state);
+    draw_snake(&state->snake);
     refresh();
 
 
@@ -144,13 +141,19 @@ void play_snake()
         int ch = getch();
         if (ch == 'q') break;
         update_direction(&state.snake, ch);
-        //TODO: Add update_snake and test!
+        update_snake(&state.snake);
 
 
         // check if food timed out
         if (difftime(time(NULL), state.food.spawn_time) > FOOD_TIME) {
             spawn_food(&state);
         }
+
+        clear();
+        draw_borders(&state);
+        draw_snake(&state.snake);
+        mvaddch(state.food.pos.y, state.food.pos.x, 'o');
+
 
         //TODO: Check snake collision
 

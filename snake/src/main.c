@@ -1,5 +1,4 @@
-#include <ncurses.h>
-#include "snake.h"
+#include "game.h"
 
 int main(void)
 {

@@ -82,11 +82,11 @@ void play_snake(GameState *state)
     // main game loop
     while (1) {
         int ch = getch();
+        // make snake move regardless of input
         if (ch != ERR) {
             if (ch == 'q') break;
             update_direction(&state->snake, ch);
         }
-        /* update_direction(&state->snake, ch); */
         update_snake(&state->snake);
 
 

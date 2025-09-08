@@ -1,21 +1,9 @@
 #ifndef SNAKE_H
 #define SNAKE_H
-#include <time.h>
+
+#include "utils.h"
 
 #define SNAKE_SIZE 100
-
-typedef enum { UP, DOWN, LEFT, RIGHT } Direction;
-
-typedef struct {
-    int x;
-    int y;
-} Point; 
-
-typedef struct {
-    Point pos;
-    time_t spawn_time;
-} Food;
-
 
 typedef struct {
     Point pos[SNAKE_SIZE];
@@ -23,14 +11,9 @@ typedef struct {
     Direction dir;
 } Snake;
 
-typedef struct {
-    Snake snake;
-    Food food;
-    int score;
-    int height;
-    int width;
-} GameState;
-
-void play_snake();
+void init_snake(Snake *snake, int width, int height);
+void draw_snake(Snake *snake);
+void update_direction(Snake *snake, int ch);
+void update_snake(Snake *snake);
 
 #endif // !SNAKE_H

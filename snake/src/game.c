@@ -65,14 +65,14 @@ void play_snake(GameState *state)
 
         // check if food timed out
         if (difftime(time(NULL), state->food.spawn_time) > FOOD_TIME) {
-            spawn_food(&state->food, state->width, state->height);
+            spawn_food(&state->food, &state->snake, state->width, state->height);
         }
 
         // check if snake head collides with food
         if (check_food_collision(state)) {
             state->score++;
             state->snake.length++;
-            spawn_food(&state->food, state->width, state->height);
+            spawn_food(&state->food, &state->snake, state->width, state->height);
         }
 
         //TODO: Add collision check with self and borders

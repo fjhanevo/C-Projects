@@ -38,38 +38,52 @@ static void setup_game(GameState *state)
     refresh();
 }
 
-void play_snake()
+static int check_food_collision(GameState *state) 
+{
+    if (state->snake.pos[0].x == state->food.pos.x &&
+        state->snake.pos[0].y == state->food.pos.y) {
+        return 1;
+    }
+    return 0;
+}
+
+void play_snake(GameState *state)
 // main function to play the game
 {
     // variables
     srand(time(NULL));
-    GameState state;
 
-    setup_game(&state);
+    setup_game(state);
 
     // main game loop
     while (1) {
-        //TODO: Fix how movement works...
         int ch = getch();
         if (ch == 'q') break;
-        update_direction(&state.snake, ch);
-        update_snake(&state.snake);
+        update_direction(&state->snake, ch);
+        update_snake(&state->snake);
 
 
         // check if food timed out
-        if (difftime(time(NULL), state.food.spawn_time) > FOOD_TIME) {
-            spawn_food(&state.food, state.width, state.height);
+        if (difftime(time(NULL), state->food.spawn_time) > FOOD_TIME) {
+            spawn_food(&state->food, state->width, state->height);
         }
 
+        // check if snake head collides with food
+        if (check_food_collision(state)) {
+            state->score++;
+            state->snake.length++;
+            spawn_food(&state->food, state->width, state->height);
+        }
+
+        //TODO: Add collision check with self and borders
+
         clear();
-        draw_borders(&state);
-        draw_snake(&state.snake);
-        mvaddch(state.food.pos.y, state.food.pos.x, 'o');
-
-
-        //TODO: Check snake collision
+        draw_borders(state);
+        draw_snake(&state->snake);
+        mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 
         refresh();
+        //TODO: Speed up loop based on length of the snake
         napms(100);     // slow down loop
     }
     endwin();

@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
-
 #include "game.h"
+#include "snake.h"
 
 #define FOOD_TIME 10
+#define GAME_SPEED 200
 
 static void draw_borders(GameState *state)
 // make sure initscr is called first
@@ -26,40 +27,66 @@ static void draw_borders(GameState *state)
     }
 }
 
-static void setup_game(GameState *state)
-{
-    get_size(&state->width, &state->height);
-    // initialize
-    initscr();
-    noecho();
-    draw_borders(state);
-    init_snake(&state->snake, state->width, state->height);
-    draw_snake(&state->snake);
-    refresh();
-}
+
 
 static int check_food_collision(GameState *state) 
 {
     if (state->snake.pos[0].x == state->food.pos.x &&
         state->snake.pos[0].y == state->food.pos.y) {
         return 1;
+    } 
+    return 0;
+}
+
+static int check_collision(GameState *state)
+{
+    int x = state->snake.pos[0].x;
+    int y = state->snake.pos[0].y;
+
+    // check border collision
+    if (x <= 0 || x >= state->width - 1 ||
+        y <= 0 || y >= state->height - 1) {
+        return 1;
+    }
+
+    // check self collision
+    for (int i = 1; i < state->snake.length - 1; i++) {
+        if (x == state->snake.pos[i].x && 
+            y == state->snake.pos[i].y) {
+            return 1;
+        }
     }
     return 0;
+}
+
+static void setup_game(GameState *state)
+{
+    get_size(&state->width, &state->height);
+    // initialize
+    initscr();
+    nodelay(stdscr, TRUE);
+    noecho();
+    curs_set(0);    // hide cursor
+    draw_borders(state);
+    init_snake(&state->snake, state->width, state->height);
+    draw_snake(&state->snake);
+    refresh();
 }
 
 void play_snake(GameState *state)
 // main function to play the game
 {
-    // variables
     srand(time(NULL));
-
     setup_game(state);
 
     // main game loop
     while (1) {
         int ch = getch();
-        if (ch == 'q') break;
-        update_direction(&state->snake, ch);
+        if (ch != ERR) {
+            if (ch == 'q') break;
+            update_direction(&state->snake, ch);
+        }
+        /* update_direction(&state->snake, ch); */
         update_snake(&state->snake);
 
 
@@ -75,16 +102,17 @@ void play_snake(GameState *state)
             spawn_food(&state->food, &state->snake, state->width, state->height);
         }
 
-        //TODO: Add collision check with self and borders
-
+        if (check_collision(state)) {
+            break;
+        }
         clear();
         draw_borders(state);
         draw_snake(&state->snake);
         mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 
         refresh();
-        //TODO: Speed up loop based on length of the snake
-        napms(100);     // slow down loop
+        // speed up loop based on increasing score
+        napms(GAME_SPEED - state->score);     // slow down loop
     }
     endwin();
 }

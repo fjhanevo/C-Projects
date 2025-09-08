@@ -2,6 +2,7 @@
 
 int main(void)
 {
-    play_snake();
+    GameState state; 
+    play_snake(&state);
     return 0;
 }

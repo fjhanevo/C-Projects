@@ -27,8 +27,6 @@ static void draw_borders(GameState *state)
     }
 }
 
-
-
 static int check_food_collision(GameState *state) 
 {
     if (state->snake.pos[0].x == state->food.pos.x &&
@@ -83,12 +81,12 @@ void play_snake(GameState *state)
     while (1) {
         int ch = getch();
         // make snake move regardless of input
+        //TODO: Fix long keypresses
         if (ch != ERR) {
             if (ch == 'q') break;
             update_direction(&state->snake, ch);
         }
         update_snake(&state->snake);
-
 
         // check if food timed out
         if (difftime(time(NULL), state->food.spawn_time) > FOOD_TIME) {
@@ -110,9 +108,14 @@ void play_snake(GameState *state)
         draw_snake(&state->snake);
         mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 
+        // add score to display
+        mvprintw(state->height + 1, 0, "Score: %d", state->score);
         refresh();
         // speed up loop based on increasing score
-        napms(GAME_SPEED - state->score);     // slow down loop
+        int delay = GAME_SPEED - state->score;
+        if (delay < 20) delay = 20; // set 20 to min speed
+        //TODO: Add play again option
+        napms(delay);     // slow down loop
     }
     endwin();
 }

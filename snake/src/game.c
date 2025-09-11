@@ -1,11 +1,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
+#include <stdbool.h>
+
 #include "game.h"
+#include "food.h"
 #include "snake.h"
+#include "utils.h"
 
 #define FOOD_TIME 10
 #define GAME_SPEED 200
+#define MAX_SPEED 20
 
 static void draw_borders(GameState *state)
 // make sure initscr is called first
@@ -59,31 +64,33 @@ static int check_collision(GameState *state)
 
 static void setup_game(GameState *state)
 {
-    get_size(&state->width, &state->height);
-    // initialize
-    initscr();
-    nodelay(stdscr, TRUE);
-    noecho();
-    curs_set(0);    // hide cursor
-    draw_borders(state);
+    state->score = 0;
+
     init_snake(&state->snake, state->width, state->height);
+
+    spawn_food(&state->food, &state->snake, state->width, state->height);
+
+    clear();
+    draw_borders(state);
     draw_snake(&state->snake);
-    refresh();
+    mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 }
 
 void play_snake(GameState *state)
 // main function to play the game
 {
-    srand(time(NULL));
     setup_game(state);
+    srand(time(NULL));
+
+    bool lost = false;
 
     // main game loop
-    while (1) {
+    while (!lost) {
         int ch = getch();
         // make snake move regardless of input
         //TODO: Fix long keypresses
         if (ch != ERR) {
-            if (ch == 'q') break;
+            if (ch == 'q') return;
             update_direction(&state->snake, ch);
         }
         update_snake(&state->snake);
@@ -101,22 +108,22 @@ void play_snake(GameState *state)
         }
 
         if (check_collision(state)) {
-            break;
+            lost = true;
         }
+
         clear();
         draw_borders(state);
         draw_snake(&state->snake);
         mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 
         // add score to display
-        mvprintw(state->height + 1, 0, "Score: %d", state->score);
+        mvprintw(state->height + 1, 0, "Score: %d\n", state->score);
+        
         refresh();
         // speed up loop based on increasing score
         int delay = GAME_SPEED - state->score;
-        if (delay < 20) delay = 20; // set 20 to min speed
-        //TODO: Add play again option
+        if (delay < MAX_SPEED) delay = MAX_SPEED; // set 20 to max loop speed
         napms(delay);     // slow down loop
     }
-    endwin();
 }
 

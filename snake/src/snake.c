@@ -1,14 +1,6 @@
 #include <ncurses.h>
 #include "snake.h"
 
-void init_snake(Snake *snake, int width, int height)
-// spawn the snake in the middle of the screen
-{
-    snake->pos[0].x = (width) / 2;
-    snake->pos[0].y = (height) / 2;
-    snake->length = 1;
-}
-
 void draw_snake(Snake *snake)
 {
     for (int i = 0; i < snake->length; i++) {
@@ -18,13 +10,19 @@ void draw_snake(Snake *snake)
 
 void update_direction(Snake *snake, int ch)
 {
-    switch (ch) {
-        case 'w': snake->dir = UP; break;
-        case 'a': snake->dir = LEFT; break;
-        case 's': snake->dir = DOWN; break;
-        case 'd': snake->dir = RIGHT; break;
-        default: break;
-    }
+    Direction new_dir = snake->dir;
+    if (ch == 'w' || ch == KEY_UP) new_dir = UP;
+    else if (ch == 'a' || ch == KEY_LEFT) new_dir = LEFT;
+    else if (ch == 's' || ch == KEY_DOWN) new_dir = DOWN;
+    else if (ch == 'd' || ch == KEY_RIGHT) new_dir = RIGHT;
+
+    // prevent reversing
+    if (!((snake->dir == UP && new_dir == DOWN) ||
+          (snake->dir == DOWN && new_dir == UP) ||
+          (snake->dir == LEFT && new_dir == RIGHT) ||
+          (snake->dir == RIGHT && new_dir == LEFT))) {
+        snake->dir = new_dir;
+    } 
 }
 
 void update_snake(Snake *snake)

@@ -12,6 +12,6 @@ typedef struct {
     int width;
 } GameState;
 
-void play_snake();
+void play_snake(GameState *state);
 
 #endif // !GAME_H

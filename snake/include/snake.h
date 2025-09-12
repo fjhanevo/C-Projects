@@ -11,7 +11,6 @@ typedef struct {
     Direction dir;
 } Snake;
 
-void init_snake(Snake *snake, int width, int height);
 void draw_snake(Snake *snake);
 void update_direction(Snake *snake, int ch);
 void update_snake(Snake *snake);

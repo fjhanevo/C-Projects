@@ -1,8 +1,8 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "game.h"
 #include "utils.h"
-
 int main(void)
 {
     GameState state; 
@@ -15,21 +15,27 @@ int main(void)
     noecho();
     curs_set(0);
 
-    while (1) {
+    bool is_playing = true;
+    while (is_playing) {
         nodelay(stdscr, TRUE);
         play_snake(&state);
 
         // clear possible trailing input
-        flushinp();
         clear();
         mvprintw(0, 0, "Game over! Score: %d", state.score);
         mvprintw(2, 0, "Play again? (y/N)");
         refresh();
 
         nodelay(stdscr, FALSE);
-        int opt = getch();
-        if (opt != 'y' && opt != 'Y') break;
-
+        int ch;
+        while ((ch = getch()) != EOF) {
+            if (ch == 'y' || ch == 'Y') {
+                break;
+            } else if (ch == 'n' || ch == 'N') {
+                is_playing = false;
+                break;
+            }
+        }
     }
     endwin();
     return 0;

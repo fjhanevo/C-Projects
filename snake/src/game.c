@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <time.h>
 #include <ncurses.h>
 #include <stdbool.h>
@@ -10,7 +9,7 @@
 
 #define FOOD_TIME 10
 #define GAME_SPEED 200
-#define MAX_SPEED 20
+#define MIN_DELAY 20
 
 static void draw_borders(GameState *state)
 // make sure initscr is called first
@@ -65,8 +64,9 @@ static int check_collision(GameState *state)
 static void setup_game(GameState *state)
 {
     state->score = 0;
-
-    init_snake(&state->snake, state->width, state->height);
+    state->snake.pos[0].x = state->width / 2;
+    state->snake.pos[0].y = state->height / 2;
+    state->snake.length = 1;
 
     spawn_food(&state->food, &state->snake, state->width, state->height);
 
@@ -80,19 +80,19 @@ void play_snake(GameState *state)
 // main function to play the game
 {
     setup_game(state);
-    srand(time(NULL));
 
     bool lost = false;
 
     // main game loop
     while (!lost) {
         int ch = getch();
-        // make snake move regardless of input
-        //TODO: Fix long keypresses
         if (ch != ERR) {
             if (ch == 'q') return;
             update_direction(&state->snake, ch);
+            // clear input to prevent long key presses
+            flushinp();
         }
+        
         update_snake(&state->snake);
 
         // check if food timed out
@@ -117,12 +117,12 @@ void play_snake(GameState *state)
         mvaddch(state->food.pos.y, state->food.pos.x, 'o');
 
         // add score to display
-        mvprintw(state->height + 1, 0, "Score: %d\n", state->score);
+        mvprintw(state->height + 1, 0, "Score: %d", state->score);
         
         refresh();
         // speed up loop based on increasing score
         int delay = GAME_SPEED - state->score;
-        if (delay < MAX_SPEED) delay = MAX_SPEED; // set 20 to max loop speed
+        if (delay < MIN_DELAY) delay = MIN_DELAY; // set 20 to max loop speed
         napms(delay);     // slow down loop
     }
 }

@@ -80,17 +80,19 @@ void play_snake(GameState *state)
 // main function to play the game
 {
     setup_game(state);
-
     bool lost = false;
 
     // main game loop
     while (!lost) {
+        // set timeout for getch() and control game speed
+        int delay = GAME_SPEED - state->score;
+        if (delay < MIN_DELAY) delay = MIN_DELAY;
+        timeout(delay);
         int ch = getch();
+        
         if (ch != ERR) {
-            if (ch == 'q') return;
+            if (ch== 'q') return;
             update_direction(&state->snake, ch);
-            // clear input to prevent long key presses
-            flushinp();
         }
         
         update_snake(&state->snake);
@@ -118,12 +120,7 @@ void play_snake(GameState *state)
 
         // add score to display
         mvprintw(state->height + 1, 0, "Score: %d", state->score);
-        
         refresh();
-        // speed up loop based on increasing score
-        int delay = GAME_SPEED - state->score;
-        if (delay < MIN_DELAY) delay = MIN_DELAY; // set 20 to max loop speed
-        napms(delay);     // slow down loop
     }
 }
 
